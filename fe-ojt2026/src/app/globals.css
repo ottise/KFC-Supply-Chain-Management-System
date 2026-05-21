@@ -1,0 +1,228 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  --kfc-red: #E4002B;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-kfc-red: var(--kfc-red);
+  --font-sans: var(--font-inter);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-inter), sans-serif;
+}
+
+.hero-section {
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.2)), url('https://images.unsplash.com/photo-1513639776629-7b61b0ac49cb?q=80&w=2067&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center;
+}
+
+/* Bóng đồng bộ ô nhập / dropdown nhập–xuất kho (bám theo border-radius của phần tử) */
+.kfc-form-field-shadow {
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.05),
+    0 4px 14px -3px rgb(15 23 42 / 0.09),
+    0 2px 8px -2px rgb(15 23 42 / 0.06);
+}
+
+/* Thẻ TÓM TẮT gradient đỏ: chỉ box-shadow (không dùng filter drop-shadow) để bóng bo tròn theo card */
+.kfc-summary-red-card {
+  border-radius: 1.25rem;
+  box-shadow:
+    0 2px 8px -2px rgb(0 0 0 / 0.08),
+    0 10px 28px -8px rgb(120 10 30 / 0.42),
+    0 4px 14px -4px rgb(0 0 0 / 0.1);
+}
+
+/* Custom DatePicker styles */
+.kfc-datepicker-custom {
+  font-family: var(--font-inter), sans-serif !important;
+  border-radius: 1.5rem !important;
+  border: 1px solid #f3f4f6 !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+}
+
+.kfc-datepicker-custom .react-datepicker__header {
+  background-color: white !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  padding-top: 1rem !important;
+}
+
+.kfc-datepicker-custom .react-datepicker__day--selected {
+  background-color: #E4002B !important;
+  border-radius: 0.5rem !important;
+}
+
+.kfc-datepicker-custom .react-datepicker__day:hover {
+  background-color: #fee2e2 !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Ensure DatePicker dropdown is visible within modal context */
+.react-datepicker-popper {
+  z-index: 2000 !important;
+  /* Above modals (600+) */
+}
+
+/* Ensure portal is visible and correctly positioned */
+#kfc-replenishment-portal,
+#kfc-stock-portal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  pointer-events: none;
+}
+
+#kfc-replenishment-portal>*,
+#kfc-stock-portal>* {
+  pointer-events: auto;
+}
+
+/* DatePicker isClearable: nút X lùi vào trong; chừa chỗ icon lịch tùy chỉnh bên trái nút X */
+.kfc-receipt-datepicker-container .react-datepicker__close-icon {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  height: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  right: 0.5rem !important;
+  padding: 0 !important;
+}
+
+.kfc-receipt-datepicker-container .react-datepicker__close-icon::after {
+  background-color: #e5e7eb !important;
+  color: #6b7280 !important;
+  font-weight: 700 !important;
+}
+
+.kfc-receipt-datepicker-container .react-datepicker__close-icon:hover::after {
+  background-color: #fecaca !important;
+  color: #b91c1c !important;
+}
+
+/* Tùy chỉnh khung lịch (Calendar Container) - bản compact hơn để đồng bộ */
+.react-datepicker {
+  font-family: 'Inter', sans-serif !important;
+  border: 1px solid #f3f4f6 !important;
+  border-radius: 0.9rem !important;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.09) !important;
+  padding: 2px !important;
+  background-color: white !important;
+}
+
+.react-datepicker__header {
+  background-color: white !important;
+  border-bottom: 1px solid #f3f4f6 !important;
+  border-top-left-radius: 0.9rem !important;
+  border-top-right-radius: 0.9rem !important;
+  padding-top: 6px !important;
+}
+
+.react-datepicker__current-month {
+  font-weight: 800 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.045em !important;
+  font-size: 0.62rem !important;
+  color: #111827 !important;
+  margin-bottom: 3px !important;
+}
+
+.react-datepicker__day-name {
+  font-weight: 800 !important;
+  color: #9ca3af !important;
+  text-transform: uppercase !important;
+  font-size: 0.5rem !important;
+  width: 1.5rem !important;
+  line-height: 1.5rem !important;
+  margin: 1px !important;
+}
+
+.react-datepicker__day {
+  width: 1.5rem !important;
+  line-height: 1.5rem !important;
+  font-weight: 600 !important;
+  font-size: 0.62rem !important;
+  color: #374151 !important;
+  margin: 1px !important;
+  transition: all 0.2s ease !important;
+}
+
+/* Màu chủ đạo KFC cho ngày được chọn */
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__day--in-range {
+  background-color: #E4002B !important;
+  color: white !important;
+  border-radius: 0.6rem !important;
+  font-weight: 800 !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: #fef2f2 !important;
+  color: #E4002B !important;
+  border-radius: 0.6rem !important;
+}
+
+.react-datepicker__navigation {
+  top: 14px !important;
+}
+
+.react-datepicker__navigation-icon::before {
+  border-color: #d1d5db !important;
+  border-width: 2px 2px 0 0 !important;
+}
+
+.react-datepicker__navigation:hover *::before {
+  border-color: #E4002B !important;
+}
+
+/* Error marquee (single-line ticker for long validation text) */
+.kfc-error-marquee {
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.kfc-error-marquee__content {
+  display: inline-block;
+  min-width: 100%;
+  padding-right: 2rem;
+}
+
+.kfc-error-marquee--animate .kfc-error-marquee__content {
+  animation: kfcErrorMarquee 9s linear infinite;
+}
+
+@keyframes kfcErrorMarquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes kfc-toast-progress {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+/* Hide scrollbar utility */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Chrome, Safari and Opera */
+}

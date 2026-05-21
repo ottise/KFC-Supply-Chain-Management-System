@@ -1,0 +1,7 @@
+<Project>
+  <!-- Tự động chạy dotnet tool restore và dotnet husky install trước khi Build -->
+  <Target Name="SetupHusky" BeforeTargets="Build" Condition="'$(IsCrossTargetingBuild)' != 'true' And '$(DOTNET_RUNNING_IN_CONTAINER)' != 'true' And '$(CI)' != 'true'">
+    <Exec Command="dotnet tool restore" StandardOutputImportance="low" StandardErrorImportance="high" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+    <Exec Command="dotnet husky install" StandardOutputImportance="low" StandardErrorImportance="high" IgnoreExitCode="true" WorkingDirectory="$(MSBuildThisFileDirectory)" />
+  </Target>
+</Project>

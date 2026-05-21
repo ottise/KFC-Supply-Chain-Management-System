@@ -1,0 +1,175 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    platform: linux/amd64
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  redis:
+    image: redis:alpine
+    platform: linux/amd64
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+
+  sql:
+    image: shiroruct/kfc-sql:latest
+    build:
+      context: .
+      dockerfile: Docker/sql/Dockerfile
+    platform: linux/amd64
+    environment:
+      - PASSWORD=Sql@12345678
+    ports:
+      - "1433:1433"
+    networks:
+      - backend
+    volumes:
+      - mssql:/var/opt/mssql
+    deploy:
+      resources:
+        limits:
+          memory: 1536M
+
+  authentication:
+    image: shiroruct/kfc-auth:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Services/Authentication/Authentication.Presentation/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8081
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=sql;Database=OJTSP26_identity;User Id=sa;Password=Sql@12345678;TrustServerCertificate=True
+      - RabbitMQ__Host=rabbitmq
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=your-super-secret-key-that-is-at-least-256-bits-long-for-development-only
+      - Jwt__Issuer=kfc-authentication
+      - Jwt__Audience=kfc-api
+    depends_on:
+      - sql
+      - rabbitmq
+      - redis
+    ports:
+      - "8081:8081"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  system:
+    image: shiroruct/kfc-system:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Services/System/System.Presentation/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8082
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=sql;Database=OJTSP26_system;User Id=sa;Password=Sql@12345678;TrustServerCertificate=True
+      - RabbitMQ__Host=rabbitmq
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=your-super-secret-key-that-is-at-least-256-bits-long-for-development-only
+      - Jwt__Issuer=kfc-authentication
+      - Jwt__Audience=kfc-api
+    depends_on:
+      - sql
+      - rabbitmq
+      - redis
+    ports:
+      - "8082:8082"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  inventory:
+    image: shiroruct/kfc-inventory:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Services/Inventory/Inventory.Presentation/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8084
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ConnectionStrings__DefaultConnection=Server=sql;Database=OJTSP26_inventory;User Id=sa;Password=Sql@12345678;TrustServerCertificate=True
+      - RabbitMQ__Host=rabbitmq
+      - Redis__ConnectionString=redis:6379
+      - Jwt__Key=your-super-secret-key-that-is-at-least-256-bits-long-for-development-only
+      - Jwt__Issuer=kfc-authentication
+      - Jwt__Audience=kfc-api
+    depends_on:
+      - sql
+      - rabbitmq
+      - redis
+    ports:
+      - "8084:8084"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+
+  gateway:
+    image: shiroruct/kfc-gateway:latest
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: GatewayAPI/Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - RabbitMQ__Host=rabbitmq
+      - Services__SystemUrl=http://system:8082
+      - Cors__AllowAnyOrigin=true
+      - ASPNETCORE_HTTPS_PORTS=
+      - Jwt__Key=your-super-secret-key-that-is-at-least-256-bits-long-for-development-only
+      - Jwt__Issuer=kfc-authentication
+      - Jwt__Audience=kfc-api
+    depends_on:
+      - authentication
+      - rabbitmq
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    platform: linux/amd64
+    container_name: kfc-be-tunnel
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_BE_TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_BE_TUNNEL_TOKEN}
+    depends_on:
+      - gateway
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  mssql:

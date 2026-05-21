@@ -1,0 +1,14 @@
+# Kiểm tra nhánh nguồn trước khi cho phép Merge
+enforce-branch-flow:
+  stage: .pre  # Chạy trước tất cả các stage khác
+  script:
+    - |
+      if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]; then
+        if [ "$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME" != "dev" ]; then
+          echo " Error: Chỉ được phép merge từ nhánh 'dev' vào 'main'."
+          echo "Nhánh hiện tại bạn đang dùng là: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+          exit 1
+        fi
+      fi
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"

@@ -1,0 +1,20 @@
+{
+   "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+   "tasks": [
+      {
+         "name": "dotnet-build",
+         "command": "dotnet",
+         "args": [
+            "build",
+            "KFCFranchiseSupplyChain.sln",
+            "--nologo",
+            "--verbosity",
+            "quiet"
+         ],
+         "include": [
+            "**/*.cs",
+            "**/*.csproj"
+         ]
+      }
+   ]
+}

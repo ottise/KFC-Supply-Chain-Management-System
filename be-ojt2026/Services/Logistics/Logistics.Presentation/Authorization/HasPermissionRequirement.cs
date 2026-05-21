@@ -1,0 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
+
+namespace Logistics.Presentation.Authorization;
+
+public class HasPermissionRequirement : IAuthorizationRequirement
+{
+    public string Permisssion { get; }
+
+    public HasPermissionRequirement(string permission)
+    {
+        Permisssion = permission;
+    }
+}

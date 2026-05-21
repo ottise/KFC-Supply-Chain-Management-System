@@ -1,0 +1,10 @@
+# Use this workspace to collaborate
+workspace:
+  id: fff0bc48-8f6c-4d8d-85a5-c595db77a8f9
+
+localResources:
+  specs:
+    - ..\GatewayAPI\obj\Debug\net8.0\EndpointInfo\GatewayAPI.json
+    - ..\Services\Authentication\Authentication.Presentation\obj\Debug\net8.0\EndpointInfo\Authentication.Presentation.json
+    - ..\Services\Inventory\Inventory.Presentation\obj\Debug\net8.0\EndpointInfo\Inventory.Presentation.json
+    - ..\Services\System\System.Presentation\obj\Debug\net8.0\EndpointInfo\System.Presentation.json
